@@ -14,9 +14,13 @@ public class CrabController : MonoBehaviour
 	public float rotateSpeed = 2.0f;
 	public float rotateAmount = 20.0f;
 	public float rotationOffset = 90.0f;
+	private Vector3 crabPosition;
+
 	public float jumpHeight = 2.0f;
-	public Vector3 crabPosition;
-	public bool jumping = false;
+	public float jumpDuration = 0.5f;
+	private float jumpTime = 0.0f;
+	private bool jumping = false;
+	private Vector3 jumpStartPosition, jumpTargetPosition;
 
 	void Start () 
 	{
@@ -39,30 +43,54 @@ public class CrabController : MonoBehaviour
 	void UpdateMovement()
 	{
 		float currentBob = Mathf.Sin(elapsedTime * bobSpeed) * bobAmount;
-		transform.position = crabPosition + new Vector3(0.0f, currentBob, 0.0f);
 		transform.eulerAngles = new Vector3(0.0f, 0.0f, rotationOffset + Mathf.Sin(elapsedTime * rotateSpeed) * rotateAmount);
 	
 		if (jumping)
 		{
-			
+			jumpTime += Time.deltaTime;
+
+			if (jumpTime > jumpDuration)
+			{
+				jumping = false;
+				crabPosition = jumpTargetPosition;
+			}
+			else
+			{
+				float t = jumpTime / jumpDuration;
+				float crabHeight = Mathf.Sin(t * Mathf.PI) * jumpHeight;
+				Vector3 jumpPosition = Vector3.Lerp(jumpStartPosition, jumpTargetPosition, t);
+
+				transform.position = jumpPosition + new Vector3(0.0f, crabHeight, 0.0f);
+			}
+		}
+		else
+		{
+			transform.position = crabPosition + new Vector3(0.0f, currentBob, 0.0f);
 		}
 	}
 
 	void HandleInput()
 	{
-		if (Input.GetKeyDown(upKey) && currentWave < (waves.Length - 1))
+		if (!jumping)
 		{
-			currentWave += 1;
-			crabPosition = waves[currentWave].transform.position;
-
-			jumping = true;
+			if (Input.GetKey(upKey) && currentWave < (waves.Length - 1))
+			{
+				currentWave += 1;
+				Jump();
+			}
+			else if (Input.GetKey(downKey) && currentWave > 0)
+			{
+				currentWave -= 1;
+				Jump();
+			}
 		}
-		else if (Input.GetKeyDown(downKey) && currentWave > 0)
-		{
-			currentWave -= 1;
-			crabPosition = waves[currentWave].transform.position;
+	}
 
-			jumping = true;
-		}
+	void Jump()
+	{
+		jumping = true;
+		jumpTime = 0.0f;
+		jumpStartPosition = crabPosition;
+		jumpTargetPosition = waves[currentWave].transform.position;
 	}
 }
