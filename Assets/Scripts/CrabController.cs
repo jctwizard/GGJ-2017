@@ -14,7 +14,9 @@ public class CrabController : MonoBehaviour
 	public float rotateSpeed = 2.0f;
 	public float rotateAmount = 20.0f;
 	public float rotationOffset = 90.0f;
+	public float jumpHeight = 2.0f;
 	public Vector3 crabPosition;
+	public bool jumping = false;
 
 	void Start () 
 	{
@@ -39,6 +41,11 @@ public class CrabController : MonoBehaviour
 		float currentBob = Mathf.Sin(elapsedTime * bobSpeed) * bobAmount;
 		transform.position = crabPosition + new Vector3(0.0f, currentBob, 0.0f);
 		transform.eulerAngles = new Vector3(0.0f, 0.0f, rotationOffset + Mathf.Sin(elapsedTime * rotateSpeed) * rotateAmount);
+	
+		if (jumping)
+		{
+			
+		}
 	}
 
 	void HandleInput()
@@ -47,11 +54,15 @@ public class CrabController : MonoBehaviour
 		{
 			currentWave += 1;
 			crabPosition = waves[currentWave].transform.position;
+
+			jumping = true;
 		}
 		else if (Input.GetKeyDown(downKey) && currentWave > 0)
 		{
 			currentWave -= 1;
 			crabPosition = waves[currentWave].transform.position;
+
+			jumping = true;
 		}
 	}
 }
