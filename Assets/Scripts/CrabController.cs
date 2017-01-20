@@ -13,6 +13,8 @@ public class CrabController : MonoBehaviour
 	public float bobAmount = 0.2f;
 	public float rotateSpeed = 2.0f;
 	public float rotateAmount = 20.0f;
+	public float rotationOffset = 90.0f;
+	public Vector3 crabPosition;
 
 	void Start () 
 	{
@@ -20,6 +22,8 @@ public class CrabController : MonoBehaviour
 		{
 			Debug.Log("Add wave transforms to character controller bottom to top!");
 		}
+
+		crabPosition = waves[currentWave].transform.position;
 	}
 
 	void Update () 
@@ -32,21 +36,22 @@ public class CrabController : MonoBehaviour
 
 	void UpdateMovement()
 	{
-		transform.position = new Vector3(0.0f, Mathf.Sin(elapsedTime * bobSpeed) * bobAmount, 0.0f);
-		transform.eulerAngles = new Vector3(0.0f, 0.0f, Mathf.Sin(elapsedTime * rotateSpeed) * rotateAmount);
+		float currentBob = Mathf.Sin(elapsedTime * bobSpeed) * bobAmount;
+		transform.position = crabPosition + new Vector3(0.0f, currentBob, 0.0f);
+		transform.eulerAngles = new Vector3(0.0f, 0.0f, rotationOffset + Mathf.Sin(elapsedTime * rotateSpeed) * rotateAmount);
 	}
 
 	void HandleInput()
 	{
-		if (Input.GetKeyDown(upKey) && currentWave < waves.Length)
+		if (Input.GetKeyDown(upKey) && currentWave < (waves.Length - 1))
 		{
 			currentWave += 1;
-			transform.position = waves[currentWave].transform.position;
+			crabPosition = waves[currentWave].transform.position;
 		}
 		else if (Input.GetKeyDown(downKey) && currentWave > 0)
 		{
 			currentWave -= 1;
-			transform.position = waves[currentWave].transform.position;
+			crabPosition = waves[currentWave].transform.position;
 		}
 	}
 }
