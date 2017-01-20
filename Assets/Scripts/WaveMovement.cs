@@ -6,6 +6,8 @@ public class WaveMovement : MonoBehaviour {
 
     public float timeOffSet;
     public float heightOffSet;
+    public float waveSize = 1;
+    public float horizontalSpeed;
 
     private float orginalHeight;
 
@@ -20,7 +22,7 @@ public class WaveMovement : MonoBehaviour {
     {
         float newHeight;
 
-        newHeight = Mathf.Sin(Time.time);
+        newHeight = Mathf.Sin(Time.time + timeOffSet);
 
         newHeight += orginalHeight;
 
