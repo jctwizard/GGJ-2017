@@ -5,7 +5,7 @@ using UnityEngine;
 public class WaveManager : MonoBehaviour {
 
     public GameObject aWave;
-    List<WaveObject> waves;
+    public List<WaveObject> waves;
 
     WaveObject lastObject;
 	// Use this for initialization
@@ -21,12 +21,18 @@ public class WaveManager : MonoBehaviour {
         {
             if(waves[i].offScreen)
             {
+                Destroy(waves[i].gameObject);
                 waves.RemoveAt(i);
-                Vector3 newWavesPosition = waves[waves.Count].transform.position;
-                newWavesPosition.x += waves[waves.Count].GetComponent<Renderer>().bounds.size.x / 2;
+                Vector3 newWavesPosition = waves[waves.Count-1].transform.position;
+                newWavesPosition.x += waves[waves.Count-1].GetComponent<Renderer>().bounds.size.x / 4;
                 newWavesPosition.x += aWave.GetComponent<Renderer>().bounds.size.x / 2;
-               
-               // Instantiate(aWave,newWavesPosition);
+                newWavesPosition.y = 0;
+
+
+                waves.Add(Instantiate(aWave,newWavesPosition, transform.rotation).GetComponent<WaveObject>());
+
+                waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 2].GetComponent<WaveMovement>().timeOffSet + 0.1f;
+
             }
         }	
 	}

@@ -22,7 +22,7 @@ public class WaveMovement : MonoBehaviour {
     {
         float newHeight;
 
-        newHeight = Mathf.Sin(Time.time + timeOffSet);
+        newHeight = Mathf.Sin((Time.time + timeOffSet) * waveSize);
 
         newHeight += orginalHeight;
 
