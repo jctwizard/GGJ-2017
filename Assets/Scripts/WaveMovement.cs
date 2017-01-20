@@ -32,6 +32,8 @@ public class WaveMovement : MonoBehaviour {
 
         newPosition.y = newHeight;
 
+        newPosition.x += horizontalSpeed * Time.deltaTime;
+
         transform.position = newPosition;
         	
 	}
