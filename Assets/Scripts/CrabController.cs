@@ -36,7 +36,8 @@ public class CrabController : MonoBehaviour
 		}
 
 		crabPosition = waves[currentWave].transform.position;
-		crabPosition.x = crabHorizontalPosition;
+
+		UpdateMovement();
 	}
 
 	void Update () 
@@ -51,7 +52,7 @@ public class CrabController : MonoBehaviour
 	{
 		Vector3 newPosition = new Vector3();
 
-		float currentBob = Mathf.Sin(elapsedTime * bobSpeed) * bobAmount;
+		float currentBob = Mathf.Cos(elapsedTime * bobSpeed) * bobAmount;
 		transform.eulerAngles = new Vector3(0.0f, 0.0f, rotationOffset + Mathf.Sin(elapsedTime * rotateSpeed) * rotateAmount);
 	
 		if (jumping)
@@ -75,7 +76,7 @@ public class CrabController : MonoBehaviour
 			newPosition = crabPosition + new Vector3(0.0f, currentBob, 0.0f);
 		}
 
-		newPosition.x = crabHorizontalPosition;
+		newPosition.x += crabHorizontalPosition;
 		transform.position = newPosition;
 	}
 
