@@ -27,6 +27,7 @@ public class CrabController : MonoBehaviour
 	private int score = 0;
 	public TextMesh scoreText;
     public List<GameObject> backBottels;
+    public int bottleCount = 0;
 
 	float touchStart = 0.0f;
 
@@ -48,7 +49,12 @@ public class CrabController : MonoBehaviour
 		}
         
 		crabPosition = waves[currentWave].transform.position;
-
+        
+        for(int i = 0; i < backBottels.Count; i++)
+        {
+            backBottels[i].GetComponent<MeshRenderer>().enabled = false;
+        }
+        
 		UpdateMovement();
 	}
 
@@ -193,8 +199,21 @@ public class CrabController : MonoBehaviour
 		{
 			score += 1;
 			scoreText.text = score.ToString();
-			Destroy(collider.gameObject);
+            collider.GetComponent<MeshRenderer>().enabled = false;
+            ShowAnotherBottle();
 		}
+    }
+
+    void ShowAnotherBottle()
+    {
+        if(bottleCount < backBottels.Count)
+        {
+            backBottels[bottleCount].GetComponent<MeshRenderer>().enabled = true;
+
+
+            bottleCount++;
+        }
+      
     }
 
 }
