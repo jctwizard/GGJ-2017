@@ -63,7 +63,20 @@ public class CrabController : MonoBehaviour
 		elapsedTime += Time.deltaTime;
 
 		HandleInput();
-		UpdateMovement();
+
+		if (stunned)
+		{
+			stunTime += Time.deltaTime;
+
+			if (stunTime > stunDuration)
+			{
+				stunned = false;
+			}
+		}
+		else
+		{
+			UpdateMovement();
+		}
 	}
 
 	void UpdateMovement()
@@ -89,6 +102,8 @@ public class CrabController : MonoBehaviour
 				{
 					tricking = false;
 					transform.rotation = trickStartRotation;
+					stunned = true;
+					stunTime = 0.0f;
 				}
 				else
 				{
