@@ -151,6 +151,10 @@ public class CrabController : MonoBehaviour
 				currentWave -= 1;
 				Jump();
 			}
+			else if (Input.GetKeyDown(trickKey))
+			{
+				Jump();
+			}
 
 			if (Input.touchCount > 0)
 			{
@@ -170,6 +174,10 @@ public class CrabController : MonoBehaviour
 					else if (touch.position.y - touchStart < -10.0f  && currentWave > 0)
 					{
 						currentWave -= 1;
+						Jump();
+					}
+					else
+					{
 						Jump();
 					}
 				}
