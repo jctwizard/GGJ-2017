@@ -8,6 +8,7 @@ public class CrabController : MonoBehaviour
 	public Transform[] waves;
 	public KeyCode upKey = KeyCode.UpArrow;
 	public KeyCode downKey = KeyCode.DownArrow;
+	public KeyCode trickKey = KeyCode.Space;
 	public float elapsedTime = 0.0f;
 	public float bobSpeed = 2.0f;
 	public float bobAmount = 0.2f;
@@ -27,6 +28,16 @@ public class CrabController : MonoBehaviour
 	public TextMesh scoreText;
 
 	float touchStart = 0.0f;
+
+	private Vector3 trickVector;
+	public float trickDuration = 0.2f;
+	public Quaternion trickStartRotation;
+	private float trickTime = 0.0f;
+	private bool tricking = false;
+
+	private bool stunned = true;
+	public float stunDuration = 1.0f;
+	private float stunTime = 0.0f;
 
 	void Start () 
 	{
@@ -63,6 +74,30 @@ public class CrabController : MonoBehaviour
 			{
 				jumping = false;
 				crabPosition = jumpTargetPosition;
+			}
+
+			if (tricking)
+			{
+				if (jumping == false)
+				{
+					tricking = false;
+					transform.rotation = trickStartRotation;
+				}
+				else
+				{
+					trickTime += Time.deltaTime;
+
+					if (trickTime > trickDuration)
+					{
+						// Successful trick!
+						tricking = false;
+					}
+					else
+					{
+						Quaternion newTrickRotation = Quaternion.AngleAxis(360 * trickTime / trickDuration, trickVector);
+						transform.rotation = trickStartRotation * newTrickRotation;
+					}
+				}
 			}
 
 			float t = jumpTime / jumpDuration;
@@ -118,6 +153,21 @@ public class CrabController : MonoBehaviour
 				}
 			}
 		}
+		else if (jumping && !tricking)
+		{
+			if (Input.GetKeyDown(trickKey))
+			{
+				Trick();
+			}
+
+			if (Input.touchCount > 0)
+			{
+				if (Input.GetTouch(0).phase == TouchPhase.Ended)
+				{
+					Trick();
+				}
+			}
+		}
 	}
 
 	void Jump()
@@ -126,6 +176,14 @@ public class CrabController : MonoBehaviour
 		jumpTime = 0.0f;
 		jumpStartPosition = crabPosition;
 		jumpTargetPosition = waves[currentWave].transform.position;
+	}
+
+	void Trick()
+	{
+		tricking = true;
+		trickTime = 0.0f;
+		trickStartRotation = transform.rotation;
+		trickVector = Random.insideUnitSphere;
 	}
 
 	void OnTriggerEnter(Collider collider)
