@@ -118,7 +118,7 @@ public class CrabController : MonoBehaviour
 			newPosition = crabPosition + new Vector3(0.0f, currentBob, 0.0f);
 		}
 
-		newPosition.x += crabHorizontalPosition;
+		newPosition.x = crabHorizontalPosition;
 		transform.position = newPosition;
 	}
 
@@ -202,6 +202,13 @@ public class CrabController : MonoBehaviour
             collider.GetComponent<MeshRenderer>().enabled = false;
             ShowAnotherBottle();
 		}
+
+        if(collider.tag == "Enemy")
+        {
+            ClearTheBottels();
+        }
+
+       
     }
 
     void ShowAnotherBottle()
@@ -214,6 +221,14 @@ public class CrabController : MonoBehaviour
             bottleCount++;
         }
       
+    }
+
+    void ClearTheBottels()
+    {
+        for (int i = 0; i < backBottels.Count; i++)
+        {
+            backBottels[i].GetComponent<MeshRenderer>().enabled = false;
+        }
     }
 
 }
