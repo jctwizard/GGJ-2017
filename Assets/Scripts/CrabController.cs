@@ -22,6 +22,8 @@ public class CrabController : MonoBehaviour
 	private bool jumping = false;
 	private Vector3 jumpStartPosition, jumpTargetPosition;
 
+	float touchStart = 0.0f;
+
 	void Start () 
 	{
 		if (waves.Length == 0)
@@ -82,6 +84,29 @@ public class CrabController : MonoBehaviour
 			{
 				currentWave -= 1;
 				Jump();
+			}
+
+			if (Input.touchCount > 0)
+			{
+				Touch touch = Input.GetTouch(0);
+
+				if (touch.phase == TouchPhase.Began)
+				{
+					touchStart = touch.position.y;
+				}
+				else if (touch.phase == TouchPhase.Ended)
+				{
+					if (touch.position.y - touchStart > 10.0f)
+					{
+						currentWave += 1;
+						Jump();
+					}
+					else if (touch.position.y - touchStart < -10.0f)
+					{
+						currentWave -= 1;
+						Jump();
+					}
+				}
 			}
 		}
 	}
