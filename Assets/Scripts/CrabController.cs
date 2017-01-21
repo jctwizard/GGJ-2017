@@ -194,5 +194,6 @@ public class CrabController : MonoBehaviour
 			scoreText.text = score.ToString();
 			Destroy(collider.gameObject);
 		}
-	}
+    }
+
 }
