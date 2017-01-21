@@ -22,6 +22,9 @@ public class CrabController : MonoBehaviour
 	private bool jumping = false;
 	private Vector3 jumpStartPosition, jumpTargetPosition;
 
+	private int score = 0;
+	public TextMesh scoreText;
+
 	float touchStart = 0.0f;
 
 	void Start () 
@@ -117,5 +120,15 @@ public class CrabController : MonoBehaviour
 		jumpTime = 0.0f;
 		jumpStartPosition = crabPosition;
 		jumpTargetPosition = waves[currentWave].transform.position;
+	}
+
+	void OnTriggerEnter(Collider collider)
+	{
+		if (collider.tag == "Score")
+		{
+			score += 1;
+			scoreText.text = score.ToString();
+			Destroy(collider.gameObject);
+		}
 	}
 }
