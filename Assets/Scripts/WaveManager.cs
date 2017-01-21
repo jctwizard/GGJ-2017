@@ -5,8 +5,12 @@ using UnityEngine;
 public class WaveManager : MonoBehaviour {
 
     public GameObject aWave;
+    public GameObject aFin;
+
+
     public float startWavesNo = 8;
     public List<WaveObject> waves;
+    public List<WaveObject> obstacles;
 
     private float baseHeight;
     public float xOffSet;
@@ -35,9 +39,14 @@ public class WaveManager : MonoBehaviour {
             newWavesPosition.x += aWave.GetComponent<Renderer>().bounds.size.x / 2;
             newWavesPosition.y = baseHeight;
 
+           
+           
             waves.Add(Instantiate(aWave, newWavesPosition, transform.rotation).GetComponent<WaveObject>());
 
             waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet = i / 10.0f;
+           
+
+           
         }
 	}
 	
@@ -45,6 +54,7 @@ public class WaveManager : MonoBehaviour {
 	void Update ()
     {
         SpawnWaves();
+        DeleteObstciles();
         
 	}
 
@@ -66,6 +76,28 @@ public class WaveManager : MonoBehaviour {
 
                 waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 2].GetComponent<WaveMovement>().timeOffSet + 0.1f;
 
+
+                int decider = Random.Range(0, 3);
+
+                if (decider == 1)
+                {
+                    newWavesPosition.y += 4;
+                    newWavesPosition.z += 5;
+
+                    obstacles.Add(Instantiate(aFin, newWavesPosition, transform.rotation).GetComponent<WaveObject>());
+                }
+            }
+        }
+    }
+
+    void DeleteObstciles()
+    {
+        for (int i = 0; i < obstacles.Count; i++)
+        {
+            if(obstacles[i].offScreen)
+            {
+                Destroy(obstacles[i].gameObject);
+                obstacles.RemoveAt(i);
             }
         }
     }
