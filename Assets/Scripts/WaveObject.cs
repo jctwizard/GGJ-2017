@@ -9,7 +9,8 @@ public class WaveObject : MonoBehaviour {
     public float horizontalSpeed;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
 		
 	}
 	
