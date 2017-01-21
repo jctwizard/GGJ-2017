@@ -9,6 +9,7 @@ public class WaveManager : MonoBehaviour {
     public List<WaveObject> waves;
 
     private float baseHeight;
+    public float xOffSet;
 
 	// Use this for initialization
 	void Start ()
@@ -23,6 +24,7 @@ public class WaveManager : MonoBehaviour {
             if (i == 0)
             {
                 newWavesPosition = transform.position;
+                newWavesPosition.x += xOffSet;
             }
             else
             {
