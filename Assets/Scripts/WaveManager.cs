@@ -5,9 +5,8 @@ using UnityEngine;
 public class WaveManager : MonoBehaviour {
 
     public GameObject aWave;
-    public GameObject aFin;
-    public GameObject aBottle;
-
+	public GameObject[] obstaclesToSpawn;
+	public GameObject[] pickupsToSpawn;
 
     public float startWavesNo = 8;
     public List<WaveObject> waves;
@@ -16,10 +15,12 @@ public class WaveManager : MonoBehaviour {
     private float baseHeight;
     public float xOffSet;
 
+	public bool spawnObjects = true;
+	public int objectSpawnOdds = 10;
+
 	// Use this for initialization
 	void Start ()
     {
-
         baseHeight = transform.position.y;
 
 		for(float i = 0; i < startWavesNo; i++)
@@ -78,24 +79,31 @@ public class WaveManager : MonoBehaviour {
                 waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 2].GetComponent<WaveMovement>().timeOffSet + 0.1f;
 
 
-                int decider = Random.Range(0, 3);
+				if (spawnObjects)
+				{
+	                int decider = Random.Range(0, objectSpawnOdds);
 
-                if (decider == 1)
-                {
-                    newWavesPosition.y += 4;
-                    newWavesPosition.z += 5;
+	                if (decider == 1)
+	                {
+	                    newWavesPosition.y += 4;
+	                    newWavesPosition.z += 5;
 
-                    obstacles.Add(Instantiate(aFin, newWavesPosition, transform.rotation).GetComponent<WaveObject>());
-                }
-                else if( decider == 2)
-                {
-                    newWavesPosition.y += 4;
-                    newWavesPosition.z += 5;
+						int obstacleIndex = Random.Range(0, obstaclesToSpawn.Length);
 
-                    obstacles.Add(Instantiate(aBottle, newWavesPosition, transform.rotation).GetComponent<WaveObject>());
-                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet;
-                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().waveSize = waves[waves.Count - 1].GetComponent<WaveMovement>().waveSize + 0.1f;
-                }
+						obstacles.Add(Instantiate(obstaclesToSpawn[obstacleIndex], newWavesPosition, transform.rotation).GetComponent<WaveObject>());
+	                }
+	                else if( decider == 2)
+	                {
+	                    newWavesPosition.y += 4;
+	                    newWavesPosition.z += 5;
+
+						int pickupIndex = Random.Range(0, pickupsToSpawn.Length);
+
+						obstacles.Add(Instantiate(pickupsToSpawn[pickupIndex], newWavesPosition, transform.rotation).GetComponent<WaveObject>());
+	                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet;
+	                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().waveSize = waves[waves.Count - 1].GetComponent<WaveMovement>().waveSize + 0.1f;
+	                }
+				}
             }
         }
     }
