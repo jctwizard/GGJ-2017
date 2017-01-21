@@ -105,12 +105,12 @@ public class CrabController : MonoBehaviour
 				}
 				else if (touch.phase == TouchPhase.Ended)
 				{
-					if (touch.position.y - touchStart > 10.0f)
+					if (touch.position.y - touchStart > 10.0f && currentWave < (waves.Length - 1))
 					{
 						currentWave += 1;
 						Jump();
 					}
-					else if (touch.position.y - touchStart < -10.0f)
+					else if (touch.position.y - touchStart < -10.0f  && currentWave > 0)
 					{
 						currentWave -= 1;
 						Jump();
