@@ -14,6 +14,7 @@ public class CrabController : MonoBehaviour
 	public float rotateSpeed = 2.0f;
 	public float rotateAmount = 20.0f;
 	public float rotationOffset = 90.0f;
+	public float crabHorizontalPosition = 0.0f;
 	private Vector3 crabPosition;
 
 	public float jumpHeight = 2.0f;
@@ -35,6 +36,7 @@ public class CrabController : MonoBehaviour
 		}
 
 		crabPosition = waves[currentWave].transform.position;
+		crabPosition.x = crabHorizontalPosition;
 	}
 
 	void Update () 
@@ -47,6 +49,8 @@ public class CrabController : MonoBehaviour
 
 	void UpdateMovement()
 	{
+		Vector3 newPosition = new Vector3();
+
 		float currentBob = Mathf.Sin(elapsedTime * bobSpeed) * bobAmount;
 		transform.eulerAngles = new Vector3(0.0f, 0.0f, rotationOffset + Mathf.Sin(elapsedTime * rotateSpeed) * rotateAmount);
 	
@@ -59,19 +63,20 @@ public class CrabController : MonoBehaviour
 				jumping = false;
 				crabPosition = jumpTargetPosition;
 			}
-			else
-			{
-				float t = jumpTime / jumpDuration;
-				float crabHeight = Mathf.Sin(t * Mathf.PI) * jumpHeight;
-				Vector3 jumpPosition = Vector3.Lerp(jumpStartPosition, jumpTargetPosition, t);
 
-				transform.position = jumpPosition + new Vector3(0.0f, crabHeight, 0.0f);
-			}
+			float t = jumpTime / jumpDuration;
+			float crabHeight = Mathf.Sin(t * Mathf.PI) * jumpHeight;
+			Vector3 jumpPosition = Vector3.Lerp(jumpStartPosition, jumpTargetPosition, t);
+
+			newPosition = jumpPosition + new Vector3(0.0f, crabHeight, 0.0f);
 		}
 		else
 		{
-			transform.position = crabPosition + new Vector3(0.0f, currentBob, 0.0f);
+			newPosition = crabPosition + new Vector3(0.0f, currentBob, 0.0f);
 		}
+
+		newPosition.x = crabHorizontalPosition;
+		transform.position = newPosition;
 	}
 
 	void HandleInput()
