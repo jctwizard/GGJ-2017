@@ -6,6 +6,7 @@ public class WaveManager : MonoBehaviour {
 
     public GameObject aWave;
     public GameObject aFin;
+    public GameObject aBottle;
 
 
     public float startWavesNo = 8;
@@ -85,6 +86,15 @@ public class WaveManager : MonoBehaviour {
                     newWavesPosition.z += 5;
 
                     obstacles.Add(Instantiate(aFin, newWavesPosition, transform.rotation).GetComponent<WaveObject>());
+                }
+                else if( decider == 2)
+                {
+                    newWavesPosition.y += 4;
+                    newWavesPosition.z += 5;
+
+                    obstacles.Add(Instantiate(aBottle, newWavesPosition, transform.rotation).GetComponent<WaveObject>());
+                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet;
+                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().waveSize = waves[waves.Count - 1].GetComponent<WaveMovement>().waveSize + 0.1f;
                 }
             }
         }
