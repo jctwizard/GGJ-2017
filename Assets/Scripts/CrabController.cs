@@ -26,6 +26,7 @@ public class CrabController : MonoBehaviour
 
 	private int score = 0;
 	public TextMesh scoreText;
+    public List<GameObject> backBottels;
 
 	float touchStart = 0.0f;
 
@@ -45,7 +46,7 @@ public class CrabController : MonoBehaviour
 		{
 			Debug.Log("Add wave transforms to character controller bottom to top!");
 		}
-
+        
 		crabPosition = waves[currentWave].transform.position;
 
 		UpdateMovement();
