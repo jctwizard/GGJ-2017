@@ -5,7 +5,7 @@ using UnityEngine;
 public class WaveObject : MonoBehaviour {
 
 
-    public bool offScreen;
+    public bool offScreen = false;
     public float horizontalSpeed;
 
 	// Use this for initialization
