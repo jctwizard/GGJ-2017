@@ -16,7 +16,15 @@ public class WaveManager : MonoBehaviour {
     public float xOffSet;
 
 	public bool spawnObjects = true;
-	public int objectSpawnOdds = 10;
+	public int objectSpawnOdds = 20;
+    public int minSpawnOdds = 7;
+
+    public float objectSpeed = -3;
+    public float speedIncrmenter = 0.5f;
+
+    public float diffcultyTimeIncrements = 7;
+    private float diffcultyTimer = 0;
+    
 
 	// Use this for initialization
 	void Start ()
@@ -57,8 +65,8 @@ public class WaveManager : MonoBehaviour {
     {
         SpawnWaves();
         DeleteObstciles();
-        
-	}
+        DiffcultyTimer();
+    }
 
     void SpawnWaves()
     {
@@ -77,9 +85,9 @@ public class WaveManager : MonoBehaviour {
                 waves.Add(Instantiate(aWave, newWavesPosition, transform.rotation).GetComponent<WaveObject>());
 
                 waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 2].GetComponent<WaveMovement>().timeOffSet + 0.1f;
+                waves[waves.Count - 1].horizontalSpeed = objectSpeed;
 
-
-				if (spawnObjects)
+                if (spawnObjects)
 				{
 	                int decider = Random.Range(0, objectSpawnOdds);
 
@@ -91,7 +99,8 @@ public class WaveManager : MonoBehaviour {
 						int obstacleIndex = Random.Range(0, obstaclesToSpawn.Length);
 
 						obstacles.Add(Instantiate(obstaclesToSpawn[obstacleIndex], newWavesPosition, transform.rotation).GetComponent<WaveObject>());
-	                }
+                        obstacles[obstacles.Count - 1].horizontalSpeed = objectSpeed;
+                    }
 	                else if( decider == 2)
 	                {
 	                    newWavesPosition.y += 4;
@@ -102,7 +111,8 @@ public class WaveManager : MonoBehaviour {
 						obstacles.Add(Instantiate(pickupsToSpawn[pickupIndex], newWavesPosition, transform.rotation).GetComponent<WaveObject>());
 	                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet;
 	                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().waveSize = waves[waves.Count - 1].GetComponent<WaveMovement>().waveSize + 0.1f;
-	                }
+                        obstacles[obstacles.Count - 1].horizontalSpeed = objectSpeed;
+                    }
 				}
             }
         }
@@ -117,6 +127,39 @@ public class WaveManager : MonoBehaviour {
                 Destroy(obstacles[i].gameObject);
                 obstacles.RemoveAt(i);
             }
+        }
+    }
+
+    void UpTheDifficulty()
+    {
+        if (objectSpawnOdds > minSpawnOdds)
+        {
+            objectSpeed += speedIncrmenter;
+            objectSpawnOdds--;
+        }
+    }
+
+    void UpdatedToNewSpeed()
+    {
+        for(int i = 0; i < obstacles.Count; i++)
+        {
+            obstacles[i].horizontalSpeed = objectSpeed;
+        }
+
+        for(int i = 0; i < waves.Count; i++)
+        {
+            waves[i].horizontalSpeed = objectSpeed;
+        }
+    }
+
+    void DiffcultyTimer()
+    {
+        diffcultyTimer += Time.deltaTime;
+
+        if(diffcultyTimer > diffcultyTimeIncrements)
+        {
+            diffcultyTimer = 0;
+            UpTheDifficulty();
         }
     }
 }
