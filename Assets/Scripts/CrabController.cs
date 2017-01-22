@@ -50,6 +50,10 @@ public class CrabController : MonoBehaviour
 	private Quaternion deathStartRotation;
 	private Vector3 deathStartPosition;
 
+	public TextMesh tweetText;
+	private float tweetTime = 0.0f;
+	public float tweetDuration = 5.0f;
+
 	void Start () 
 	{
 		if (waves.Length == 0)
@@ -70,6 +74,16 @@ public class CrabController : MonoBehaviour
 	void Update () 
 	{
 		elapsedTime += Time.deltaTime;
+
+		if (tweetText.text != "")
+		{
+			tweetTime += Time.deltaTime;
+
+			if (tweetTime > tweetDuration)
+			{
+				tweetText.text = "";
+			}
+		}
 
 		if (!dying)
 		{
@@ -140,6 +154,7 @@ public class CrabController : MonoBehaviour
 					transform.rotation = trickStartRotation;
 					stunned = true;
 					stunTime = 0.0f;
+					ClearTheBottels();
 				}
 				else
 				{
@@ -284,6 +299,22 @@ public class CrabController : MonoBehaviour
             ShowAnotherBottle();
 		}
 
+		if (collider.tag == "CrabTastic")
+		{
+			score += 1;
+
+			if (score > PlayerPrefs.GetInt("Highscore"))
+			{
+				PlayerPrefs.SetInt("Highscore", score);
+			}
+
+			scoreText.text = score.ToString();
+			collider.GetComponent<MeshRenderer>().enabled = false;
+			ShowAnotherBottle();
+
+			ShowTweet();
+		}
+
 		if(collider.tag == "Enemy" && !dying)
         {
             ClearTheBottels();
@@ -299,7 +330,6 @@ public class CrabController : MonoBehaviour
 
             bottleCount++;
         }
-      
     }
 
     void ClearTheBottels()
@@ -308,6 +338,15 @@ public class CrabController : MonoBehaviour
         {
             backBottels[i].GetComponent<MeshRenderer>().enabled = false;
         }
+
+		bottleCount = 0;
     }
 
+	void ShowTweet()
+	{
+		string recentTweet = "placeholder";
+		tweetText.text = "message from a bottle:\n" + recentTweet;
+
+		tweetTime = 0.0f;
+	}
 }
