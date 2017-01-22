@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CrabController : MonoBehaviour 
 {
@@ -41,6 +42,18 @@ public class CrabController : MonoBehaviour
 	public float stunDuration = 1.0f;
 	private float stunTime = 0.0f;
 
+	private bool dying = false;
+	public float deathDuration = 1.0f;
+	public float deathDelay = 1.0f;
+	public float deathEndDelay = 1.0f;
+	private float deathTime = 0.0f;
+	private Quaternion deathStartRotation;
+	private Vector3 deathStartPosition;
+
+	public TextMesh tweetText;
+	private float tweetTime = 0.0f;
+	public float tweetDuration = 5.0f;
+
 	void Start () 
 	{
 		if (waves.Length == 0)
@@ -62,20 +75,57 @@ public class CrabController : MonoBehaviour
 	{
 		elapsedTime += Time.deltaTime;
 
-		HandleInput();
-
-		if (stunned)
+		if (tweetText.text != "")
 		{
-			stunTime += Time.deltaTime;
+			tweetTime += Time.deltaTime;
 
-			if (stunTime > stunDuration)
+			if (tweetTime > tweetDuration)
 			{
-				stunned = false;
+				tweetText.text = "";
+			}
+		}
+
+		if (!dying)
+		{
+			HandleInput();
+
+			if (stunned)
+			{
+				stunTime += Time.deltaTime;
+
+				if (stunTime > stunDuration)
+				{
+					stunned = false;
+				}
+			}
+			else
+			{
+				UpdateMovement();
 			}
 		}
 		else
 		{
-			UpdateMovement();
+			deathTime += Time.deltaTime;
+
+			if (deathTime > deathDelay)
+			{
+				if ((deathTime - deathDelay) < deathDuration)
+				{
+					float t = (deathTime - deathDelay) / deathDuration;
+					float crabHeight = Mathf.Sin(t * Mathf.PI * 1.5f) * jumpHeight * 2;
+
+					Vector3 newPosition = deathStartPosition;
+					newPosition.y = crabHeight;
+					transform.position = newPosition;
+
+					Quaternion newTrickRotation = Quaternion.AngleAxis(180 * t, new Vector3(1, 0, 0));
+					transform.rotation = deathStartRotation * newTrickRotation;
+				}
+				else if ((deathTime - deathDelay - deathDuration) > deathEndDelay)
+				{
+					SceneManager.LoadScene("StartScene");
+				}
+			}
 		}
 	}
 
@@ -104,6 +154,7 @@ public class CrabController : MonoBehaviour
 					transform.rotation = trickStartRotation;
 					stunned = true;
 					stunTime = 0.0f;
+					ClearTheBottels();
 				}
 				else
 				{
@@ -216,22 +267,59 @@ public class CrabController : MonoBehaviour
 		trickVector = Random.insideUnitSphere;
 	}
 
+	void Die()
+	{
+		dying = true;
+		deathTime = 0.0f;
+		deathDelay = 0.0f;
+		deathStartRotation = transform.rotation;
+		deathStartPosition = transform.position;
+
+		WaveObject[] waveObjects = GameObject.FindObjectsOfType<WaveObject>();
+
+		foreach (WaveObject waveObject in waveObjects)
+		{
+			waveObject.horizontalSpeed = 0.0f;
+		}
+	}
+
 	void OnTriggerEnter(Collider collider)
 	{
 		if (collider.tag == "Score")
 		{
 			score += 1;
+
+			if (score > PlayerPrefs.GetInt("Highscore"))
+			{
+				PlayerPrefs.SetInt("Highscore", score);
+			}
+
 			scoreText.text = score.ToString();
             collider.GetComponent<MeshRenderer>().enabled = false;
             ShowAnotherBottle();
 		}
 
-        if(collider.tag == "Enemy")
+		if (collider.tag == "CrabTastic")
+		{
+			score += 1;
+
+			if (score > PlayerPrefs.GetInt("Highscore"))
+			{
+				PlayerPrefs.SetInt("Highscore", score);
+			}
+
+			scoreText.text = score.ToString();
+			collider.GetComponent<MeshRenderer>().enabled = false;
+			ShowAnotherBottle();
+
+			ShowTweet();
+		}
+
+		if(collider.tag == "Enemy" && !dying)
         {
             ClearTheBottels();
+			Die();
         }
-
-       
     }
 
     void ShowAnotherBottle()
@@ -240,10 +328,8 @@ public class CrabController : MonoBehaviour
         {
             backBottels[bottleCount].GetComponent<MeshRenderer>().enabled = true;
 
-
             bottleCount++;
         }
-      
     }
 
     void ClearTheBottels()
@@ -252,6 +338,15 @@ public class CrabController : MonoBehaviour
         {
             backBottels[i].GetComponent<MeshRenderer>().enabled = false;
         }
+
+		bottleCount = 0;
     }
 
+	void ShowTweet()
+	{
+		string recentTweet = "placeholder";
+		tweetText.text = "message from a bottle:\n" + recentTweet;
+
+		tweetTime = 0.0f;
+	}
 }
