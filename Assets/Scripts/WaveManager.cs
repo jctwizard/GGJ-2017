@@ -25,7 +25,6 @@ public class WaveManager : MonoBehaviour {
     public float diffcultyTimeIncrements = 7;
     private float diffcultyTimer = 0;
     
-
 	// Use this for initialization
 	void Start ()
     {

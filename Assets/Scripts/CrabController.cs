@@ -41,6 +41,10 @@ public class CrabController : MonoBehaviour
 	public float stunDuration = 1.0f;
 	private float stunTime = 0.0f;
 
+	private bool dying = false;
+	public float deathDuration = 2.0f;
+	private float deathTime = 0.0f;
+
 	void Start () 
 	{
 		if (waves.Length == 0)
@@ -221,6 +225,12 @@ public class CrabController : MonoBehaviour
 		if (collider.tag == "Score")
 		{
 			score += 1;
+
+			if (score > PlayerPrefs.GetInt("Highscore"))
+			{
+				PlayerPrefs.SetInt("Highscore", score);
+			}
+
 			scoreText.text = score.ToString();
             collider.GetComponent<MeshRenderer>().enabled = false;
             ShowAnotherBottle();
@@ -230,8 +240,6 @@ public class CrabController : MonoBehaviour
         {
             ClearTheBottels();
         }
-
-       
     }
 
     void ShowAnotherBottle()
