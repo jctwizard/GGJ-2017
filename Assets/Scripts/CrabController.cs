@@ -49,6 +49,8 @@ public class CrabController : MonoBehaviour
 	private float deathTime = 0.0f;
 	private Quaternion deathStartRotation;
 	private Vector3 deathStartPosition;
+	private bool playedDeathSound = false;
+	public AudioSource mainMusic;
 
 	public TextMesh tweetText;
 	private float tweetTime = 0.0f;
@@ -132,12 +134,17 @@ public class CrabController : MonoBehaviour
 
 					Quaternion newTrickRotation = Quaternion.AngleAxis(180 * t, new Vector3(1, 0, 0));
 					transform.rotation = deathStartRotation * newTrickRotation;
+
+					if (!playedDeathSound)
+					{
+						int splashIndex = Random.Range(0, 3);
+
+						LoadAndPlay(splashNoise[splashIndex]);
+						playedDeathSound = true;
+					}
 				}
 				else if ((deathTime - deathDelay - deathDuration) > deathEndDelay)
 				{
-                    int splashIndex = Random.Range(0, 3);
-
-                    LoadAndPlay(splashNoise[splashIndex]);
 					SceneManager.LoadScene("StartScene");
 				}
 			}
@@ -292,6 +299,9 @@ public class CrabController : MonoBehaviour
 		deathStartRotation = transform.rotation;
 		deathStartPosition = transform.position;
 
+		mainMusic.volume = 0.0f;
+		LoadAndPlay(failTrick);
+
 		WaveObject[] waveObjects = GameObject.FindObjectsOfType<WaveObject>();
 
 		foreach (WaveObject waveObject in waveObjects)
@@ -313,7 +323,8 @@ public class CrabController : MonoBehaviour
 
 			scoreText.text = score.ToString();
             collider.GetComponent<MeshRenderer>().enabled = false;
-            ShowAnotherBottle();
+			ShowAnotherBottle();
+			LoadAndPlay(bottleCollect);
 
             score += bottleCount;
         }

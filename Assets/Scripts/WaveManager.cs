@@ -108,7 +108,7 @@ public class WaveManager : MonoBehaviour {
 
                 if (decider == 1)
                 {
-                    newObstcalPosition.y += 4;
+                    newObstcalPosition.y += 3;
                     newObstcalPosition.z += 5;
 
                     int obstacleIndex = Random.Range(0, obstaclesToSpawn.Length);
