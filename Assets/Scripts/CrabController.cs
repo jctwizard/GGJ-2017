@@ -55,6 +55,7 @@ public class CrabController : MonoBehaviour
 	public float tweetDuration = 5.0f;
 
 	string[] recentTweets = {	"have a crabtastic day #crabtastic",
+								"malcolm has a crabtastic moustache",
 								"did you hear about the crab that went surfing? \nit pulled a mussel #crabtastic"};
 
     AudioSource audioSource;
