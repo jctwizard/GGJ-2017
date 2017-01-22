@@ -54,6 +54,10 @@ public class CrabController : MonoBehaviour
 	private float tweetTime = 0.0f;
 	public float tweetDuration = 5.0f;
 
+	string[] recentTweets = {	"have a crabtastic day #crabtastic",
+								" #crabtastic," +
+								"did you hear about the crab that went surfing? \nit pulled a mussel #crabtastic"};
+
 	void Start () 
 	{
 		if (waves.Length == 0)
@@ -299,7 +303,7 @@ public class CrabController : MonoBehaviour
             ShowAnotherBottle();
 		}
 
-		if (collider.tag == "CrabTastic")
+		if (collider.tag == "Crabtastic")
 		{
 			score += 1;
 
@@ -344,8 +348,8 @@ public class CrabController : MonoBehaviour
 
 	void ShowTweet()
 	{
-		string recentTweet = "placeholder";
-		tweetText.text = "message from a bottle:\n" + recentTweet;
+		int randomTweet = Random.Range(0, recentTweets.Length);
+		tweetText.text = recentTweets[randomTweet];
 
 		tweetTime = 0.0f;
 	}
