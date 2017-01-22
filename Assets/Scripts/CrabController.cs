@@ -54,8 +54,16 @@ public class CrabController : MonoBehaviour
 	private float tweetTime = 0.0f;
 	public float tweetDuration = 5.0f;
 
+    AudioSource audioSource;
+    public AudioClip bottleCollect;
+    public AudioClip[] splashNoise;
+    public AudioClip succsesTrick;
+    public AudioClip failTrick;
+
 	void Start () 
 	{
+        audioSource = GetComponent<AudioSource>();
+
 		if (waves.Length == 0)
 		{
 			Debug.Log("Add wave transforms to character controller bottom to top!");
@@ -155,6 +163,7 @@ public class CrabController : MonoBehaviour
 					stunned = true;
 					stunTime = 0.0f;
 					ClearTheBottels();
+                    audioSource.PlayOneShot(failTrick);
 				}
 				else
 				{
@@ -164,7 +173,8 @@ public class CrabController : MonoBehaviour
 					{
 						// Successful trick!
 						tricking = false;
-					}
+                        audioSource.PlayOneShot(succsesTrick);
+                    }
 					else
 					{
 						Quaternion newTrickRotation = Quaternion.AngleAxis(360 * trickTime / trickDuration, trickVector);
@@ -301,9 +311,9 @@ public class CrabController : MonoBehaviour
 
 		if (collider.tag == "CrabTastic")
 		{
-			score += 1;
-
-			if (score > PlayerPrefs.GetInt("Highscore"))
+			score += bottleCount;
+            audioSource.PlayOneShot(bottleCollect);
+            if (score > PlayerPrefs.GetInt("Highscore"))
 			{
 				PlayerPrefs.SetInt("Highscore", score);
 			}
