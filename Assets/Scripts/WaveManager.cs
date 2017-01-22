@@ -120,7 +120,7 @@ public class WaveManager : MonoBehaviour {
                 {
                     newObstcalPosition.y += 4;
                     newObstcalPosition.z += 5;
-
+                    newObstcalPosition.x += Random.Range(0, 2);
                     int pickupIndex = Random.Range(0, pickupsToSpawn.Length);
 
                     obstacles.Add(Instantiate(pickupsToSpawn[pickupIndex], newObstcalPosition, transform.rotation).GetComponent<WaveObject>());
