@@ -21,10 +21,13 @@ public class WaveManager : MonoBehaviour {
 
     public float objectSpeed = -3;
     public float speedIncrmenter = 0.5f;
+    public float maxSpeed;
 
-    public float diffcultyTimeIncrements = 7;
+    public float diffcultyTimeIncrements = 3;
+    public float timeIncrementsMin = 1;
     private float diffcultyTimer = 0;
-    
+
+    bool gameOn = true;
 
 	// Use this for initialization
 	void Start ()
@@ -48,14 +51,9 @@ public class WaveManager : MonoBehaviour {
            
             newWavesPosition.x += aWave.GetComponent<Renderer>().bounds.size.x / 2;
             newWavesPosition.y = baseHeight;
-
-           
            
             waves.Add(Instantiate(aWave, newWavesPosition, transform.rotation).GetComponent<WaveObject>());
-
             waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet = i / 10.0f;
-           
-
            
         }
 	}
@@ -64,8 +62,12 @@ public class WaveManager : MonoBehaviour {
 	void Update ()
     {
         SpawnWaves();
-        DeleteObstciles();
-        DiffcultyTimer();
+        if (gameOn)
+        {
+            SpawnObstciles();
+            DeleteObstciles();
+            SpeedTimer();
+        }
     }
 
     void SpawnWaves()
@@ -87,33 +89,52 @@ public class WaveManager : MonoBehaviour {
                 waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 2].GetComponent<WaveMovement>().timeOffSet + 0.1f;
                 waves[waves.Count - 1].horizontalSpeed = objectSpeed;
 
-                if (spawnObjects)
-				{
-	                int decider = Random.Range(0, objectSpawnOdds);
+           
+            }
+        }
+    }
 
-	                if (decider == 1)
-	                {
-	                    newWavesPosition.y += 4;
-	                    newWavesPosition.z += 5;
+    void SpawnObstciles()
+    {
+        if (spawnObjects)
+        {
+            diffcultyTimer += Time.deltaTime;
 
-						int obstacleIndex = Random.Range(0, obstaclesToSpawn.Length);
+            if (diffcultyTimer > diffcultyTimeIncrements)
+            { 
+          
+                int decider = Random.Range(0, 4);
+                Vector3 newObstcalPosition = waves[waves.Count - 1].transform.position;
 
-						obstacles.Add(Instantiate(obstaclesToSpawn[obstacleIndex], newWavesPosition, transform.rotation).GetComponent<WaveObject>());
-                        obstacles[obstacles.Count - 1].horizontalSpeed = objectSpeed;
-                    }
-	                else if( decider == 2)
-	                {
-	                    newWavesPosition.y += 4;
-	                    newWavesPosition.z += 5;
+                if (decider == 1)
+                {
+                    newObstcalPosition.y += 4;
+                    newObstcalPosition.z += 5;
 
-						int pickupIndex = Random.Range(0, pickupsToSpawn.Length);
+                    int obstacleIndex = Random.Range(0, obstaclesToSpawn.Length);
 
-						obstacles.Add(Instantiate(pickupsToSpawn[pickupIndex], newWavesPosition, transform.rotation).GetComponent<WaveObject>());
-	                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet;
-	                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().waveSize = waves[waves.Count - 1].GetComponent<WaveMovement>().waveSize + 0.1f;
-                        obstacles[obstacles.Count - 1].horizontalSpeed = objectSpeed;
-                    }
-				}
+                    obstacles.Add(Instantiate(obstaclesToSpawn[obstacleIndex], newObstcalPosition, transform.rotation).GetComponent<WaveObject>());
+                    obstacles[obstacles.Count - 1].horizontalSpeed = objectSpeed;
+                }
+                else if (decider == 2)
+                {
+                    newObstcalPosition.y += 4;
+                    newObstcalPosition.z += 5;
+
+                    int pickupIndex = Random.Range(0, pickupsToSpawn.Length);
+
+                    obstacles.Add(Instantiate(pickupsToSpawn[pickupIndex], newObstcalPosition, transform.rotation).GetComponent<WaveObject>());
+                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet;
+                    obstacles[obstacles.Count - 1].GetComponent<WaveMovement>().waveSize = waves[waves.Count - 1].GetComponent<WaveMovement>().waveSize + 0.1f;
+                    obstacles[obstacles.Count - 1].horizontalSpeed = objectSpeed;
+                }
+
+                diffcultyTimer = 0;
+
+                if (diffcultyTimeIncrements > timeIncrementsMin)
+                {
+                    diffcultyTimeIncrements -= 0.1f;
+                }
             }
         }
     }
@@ -130,12 +151,14 @@ public class WaveManager : MonoBehaviour {
         }
     }
 
-    void UpTheDifficulty()
+    void SpeedTimer()
     {
-        if (objectSpawnOdds > minSpawnOdds)
+
+        if (objectSpeed > maxSpeed)
         {
-            objectSpeed += speedIncrmenter;
-            objectSpawnOdds--;
+            objectSpeed -= speedIncrmenter * Time.deltaTime;
+
+            UpdatedToNewSpeed();
         }
     }
 
@@ -152,14 +175,8 @@ public class WaveManager : MonoBehaviour {
         }
     }
 
-    void DiffcultyTimer()
+    public void StartTheGame()
     {
-        diffcultyTimer += Time.deltaTime;
-
-        if(diffcultyTimer > diffcultyTimeIncrements)
-        {
-            diffcultyTimer = 0;
-            UpTheDifficulty();
-        }
+        gameOn = true;
     }
 }
