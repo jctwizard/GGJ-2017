@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CrabController : MonoBehaviour 
 {
@@ -42,8 +43,12 @@ public class CrabController : MonoBehaviour
 	private float stunTime = 0.0f;
 
 	private bool dying = false;
-	public float deathDuration = 2.0f;
+	public float deathDuration = 1.0f;
+	public float deathDelay = 1.0f;
+	public float deathEndDelay = 1.0f;
 	private float deathTime = 0.0f;
+	private Quaternion deathStartRotation;
+	private Vector3 deathStartPosition;
 
 	void Start () 
 	{
@@ -66,20 +71,47 @@ public class CrabController : MonoBehaviour
 	{
 		elapsedTime += Time.deltaTime;
 
-		HandleInput();
-
-		if (stunned)
+		if (!dying)
 		{
-			stunTime += Time.deltaTime;
+			HandleInput();
 
-			if (stunTime > stunDuration)
+			if (stunned)
 			{
-				stunned = false;
+				stunTime += Time.deltaTime;
+
+				if (stunTime > stunDuration)
+				{
+					stunned = false;
+				}
+			}
+			else
+			{
+				UpdateMovement();
 			}
 		}
 		else
 		{
-			UpdateMovement();
+			deathTime += Time.deltaTime;
+
+			if (deathTime > deathDelay)
+			{
+				if ((deathTime - deathDelay) < deathDuration)
+				{
+					float t = (deathTime - deathDelay) / deathDuration;
+					float crabHeight = Mathf.Sin(t * Mathf.PI * 1.5f) * jumpHeight * 2;
+
+					Vector3 newPosition = deathStartPosition;
+					newPosition.y = crabHeight;
+					transform.position = newPosition;
+
+					Quaternion newTrickRotation = Quaternion.AngleAxis(180 * t, new Vector3(1, 0, 0));
+					transform.rotation = deathStartRotation * newTrickRotation;
+				}
+				else if ((deathTime - deathDelay - deathDuration) > deathEndDelay)
+				{
+					SceneManager.LoadScene("StartScene");
+				}
+			}
 		}
 	}
 
@@ -220,6 +252,22 @@ public class CrabController : MonoBehaviour
 		trickVector = Random.insideUnitSphere;
 	}
 
+	void Die()
+	{
+		dying = true;
+		deathTime = 0.0f;
+		deathDelay = 0.0f;
+		deathStartRotation = transform.rotation;
+		deathStartPosition = transform.position;
+
+		WaveObject[] waveObjects = GameObject.FindObjectsOfType<WaveObject>();
+
+		foreach (WaveObject waveObject in waveObjects)
+		{
+			waveObject.horizontalSpeed = 0.0f;
+		}
+	}
+
 	void OnTriggerEnter(Collider collider)
 	{
 		if (collider.tag == "Score")
@@ -236,9 +284,10 @@ public class CrabController : MonoBehaviour
             ShowAnotherBottle();
 		}
 
-        if(collider.tag == "Enemy")
+		if(collider.tag == "Enemy" && !dying)
         {
             ClearTheBottels();
+			Die();
         }
     }
 
@@ -247,7 +296,6 @@ public class CrabController : MonoBehaviour
         if(bottleCount < backBottels.Count)
         {
             backBottels[bottleCount].GetComponent<MeshRenderer>().enabled = true;
-
 
             bottleCount++;
         }
