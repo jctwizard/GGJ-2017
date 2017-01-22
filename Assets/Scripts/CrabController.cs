@@ -163,7 +163,7 @@ public class CrabController : MonoBehaviour
 					stunned = true;
 					stunTime = 0.0f;
 					ClearTheBottels();
-                    audioSource.PlayOneShot(failTrick);
+                    LoadAndPlay(failTrick);
 				}
 				else
 				{
@@ -173,7 +173,7 @@ public class CrabController : MonoBehaviour
 					{
 						// Successful trick!
 						tricking = false;
-                        audioSource.PlayOneShot(succsesTrick);
+                        LoadAndPlay(succsesTrick);
                     }
 					else
 					{
@@ -313,8 +313,9 @@ public class CrabController : MonoBehaviour
 
 		if (collider.tag == "CrabTastic")
 		{
-			score += bottleCount;
-            audioSource.PlayOneShot(bottleCollect);
+            ShowAnotherBottle();
+            score += bottleCount;
+            LoadAndPlay(bottleCollect);
             if (score > PlayerPrefs.GetInt("Highscore"))
 			{
 				PlayerPrefs.SetInt("Highscore", score);
@@ -322,7 +323,7 @@ public class CrabController : MonoBehaviour
 
 			scoreText.text = score.ToString();
 			collider.GetComponent<MeshRenderer>().enabled = false;
-			ShowAnotherBottle();
+			
 
 			ShowTweet();
 		}
@@ -361,4 +362,10 @@ public class CrabController : MonoBehaviour
 
 		tweetTime = 0.0f;
 	}
+
+    void LoadAndPlay(AudioClip audioclip)
+    {
+        audioSource.clip = audioclip;
+        audioSource.Play();
+    }
 }
