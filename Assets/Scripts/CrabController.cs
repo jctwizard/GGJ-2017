@@ -54,17 +54,14 @@ public class CrabController : MonoBehaviour
 	private float tweetTime = 0.0f;
 	public float tweetDuration = 5.0f;
 
-<<<<<<< HEAD
 	string[] recentTweets = {	"have a crabtastic day #crabtastic",
-								" #crabtastic," +
 								"did you hear about the crab that went surfing? \nit pulled a mussel #crabtastic"};
-=======
+
     AudioSource audioSource;
     public AudioClip bottleCollect;
     public AudioClip[] splashNoise;
     public AudioClip succsesTrick;
     public AudioClip failTrick;
->>>>>>> 12417ff88e3fbef2cbcb4ed9e9e7a98c9875ed16
 
 	void Start () 
 	{
