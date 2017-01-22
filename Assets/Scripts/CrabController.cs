@@ -297,7 +297,7 @@ public class CrabController : MonoBehaviour
 	{
 		if (collider.tag == "Score")
 		{
-			score += 1;
+			
 
 			if (score > PlayerPrefs.GetInt("Highscore"))
 			{
@@ -307,7 +307,9 @@ public class CrabController : MonoBehaviour
 			scoreText.text = score.ToString();
             collider.GetComponent<MeshRenderer>().enabled = false;
             ShowAnotherBottle();
-		}
+
+            score += bottleCount;
+        }
 
 		if (collider.tag == "CrabTastic")
 		{
