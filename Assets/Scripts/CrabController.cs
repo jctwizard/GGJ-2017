@@ -135,6 +135,9 @@ public class CrabController : MonoBehaviour
 				}
 				else if ((deathTime - deathDelay - deathDuration) > deathEndDelay)
 				{
+                    int splashIndex = Random.Range(0, 3);
+
+                    LoadAndPlay(splashNoise[splashIndex]);
 					SceneManager.LoadScene("StartScene");
 				}
 			}

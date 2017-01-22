@@ -34,10 +34,7 @@ public class GameStartScript : MonoBehaviour {
             if (timer > time4)
             {
                 no1.GetComponent<MeshRenderer>().enabled = false;
-                for (int i = 0; i < waveMangers.Count; i++)
-                {
-                    waveMangers[i].StartTheGame();
-                }
+               
                 done = true;
             }
             else if (timer > time3)
@@ -52,7 +49,12 @@ public class GameStartScript : MonoBehaviour {
             }
             else if (timer > time1)
             {
+
                 no3.GetComponent<MeshRenderer>().enabled = true;
+                for (int i = 0; i < waveMangers.Count; i++)
+                {
+                    waveMangers[i].StartTheGame();
+                }
             }
         }
 	}
