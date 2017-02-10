@@ -19,9 +19,11 @@ public class GameStartScript : MonoBehaviour {
 
     bool done = false;
 
+    
 	// Use this for initialization
 	void Start () {
-		
+
+        GetComponent<AudioSource>().Play();
 	}
 	
 	// Update is called once per frame
