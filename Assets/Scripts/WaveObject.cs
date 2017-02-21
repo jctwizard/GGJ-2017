@@ -17,15 +17,21 @@ public class WaveObject : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        Vector3 newPosition = transform.position;
-
-        newPosition.x += horizontalSpeed * Time.deltaTime;
-
-        transform.position = newPosition;
+        UpdatePositon();
     }
 
     void OnBecameInvisible()
     {
         offScreen = true;
+    }
+
+    public void UpdatePositon()
+    {
+
+        Vector3 newPosition = transform.position;
+
+        newPosition.x += horizontalSpeed * Time.deltaTime;
+
+        transform.position = newPosition;
     }
 }

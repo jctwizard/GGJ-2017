@@ -89,7 +89,8 @@ public class WaveManager : MonoBehaviour {
                 waves[waves.Count - 1].GetComponent<WaveMovement>().timeOffSet = waves[waves.Count - 2].GetComponent<WaveMovement>().timeOffSet + 0.1f;
                 waves[waves.Count - 1].horizontalSpeed = objectSpeed;
 
-           
+                waves[waves.Count - 1].UpdatePositon();
+
             }
         }
     }

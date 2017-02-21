@@ -54,9 +54,9 @@ public class CrabController : MonoBehaviour
 
 	public TextMesh tweetText;
 	private float tweetTime = 0.0f;
-	public float tweetDuration = 5.0f;
+	public float tweetDuration = 10.0f;
 
-	string[] recentTweets = {	"have a crabtastic day #crabtastic",
+	public string[] recentTweets = {	"have a crabtastic day #crabtastic",
 								"malcolm has a crabtastic moustache",
 								"did you hear about the crab that went surfing? \nit pulled a mussel #crabtastic"};
 
